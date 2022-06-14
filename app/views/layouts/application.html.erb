@@ -20,6 +20,13 @@
   </nav>
 
   <body>
-    <%= yield %>
+    <div class="container-fluid">
+      <div class="row flex-nowrap">
+        <%= yield :sidebar %>
+      <div class="col py-3">
+          <%= yield %>
+      </div>
+    </div>
+   
   </body>
 </html>

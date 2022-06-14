@@ -1,2 +1,8 @@
-<%= javascript_pack_tag 'hello_react' %>
+<%= javascript_pack_tag 'blogs/index/Blogs' %>
+<div>
+  <% content_for(:sidebar) do %>
+    <%= render partial: 'layouts/sidebar' %>
+  <% end %>
+  <div id="blogs"></div>
+</div>
 
