@@ -1,4 +1,5 @@
 @import "bootstrap/scss/bootstrap";
+@import "font-awesome";
 
 
 .navbar-custom {
@@ -36,5 +37,11 @@
 
 .blog-heading {
   font-size: 20px;
+}
+
+// about page
+
+.para {
+  width: 80%;
 }
 
