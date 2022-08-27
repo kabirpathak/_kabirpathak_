@@ -10,11 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_19_141950) do
+ActiveRecord::Schema.define(version: 2022_08_27_091545) do
 
   create_table "blogs", force: :cascade do |t|
     t.string "title"
     t.string "body"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "collections", force: :cascade do |t|
+    t.string "title"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -27,11 +33,27 @@ ActiveRecord::Schema.define(version: 2022_04_19_141950) do
     t.integer "blog_id"
   end
 
+  create_table "photos", force: :cascade do |t|
+    t.string "url"
+    t.string "title"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "collection_id"
+  end
+
   create_table "tags", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "blog_id"
+  end
+
+  create_table "videos", force: :cascade do |t|
+    t.string "url"
+    t.string "title"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "collection_id"
   end
 
 end
