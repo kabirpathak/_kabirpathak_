@@ -1,42 +1,3 @@
-image: "elitmus/global-image-ci-cd"
-services:
-  - redis:latest
-variables:
-  MYSQL_ALLOW_EMPTY_PASSWORD: "1"
-  MYSQL_DATABASE: "elitmus_test"
-  RAILS_ENV: "test"
-
-cache:
-  paths:
-    - vendor/ruby
-    - node_modules/
-
-before_script:
-  - gem install bundler  --no-document
-  - bundle install --local -j $(nproc) --path vendor --without development elocal
-  - ln -sf $PWD/config/database.yml.ci                           $PWD/config/database.yml
-  - ln -sf $PWD/config/elapi_apps.yml.example                    $PWD/config/elapi_apps.yml
-  - ln -sf $PWD/config/google_oauth2.yml.example                 $PWD/config/google_oauth2.yml
-  - ln -sf $PWD/config/otherdb.yml.example                       $PWD/config/otherdb.yml
-  - ln -sf $PWD/config/s3.yml.example                            $PWD/config/s3.yml
-  - ln -sf $PWD/config/secrets.yml.example                       $PWD/config/secrets.yml
-  - ln -sf $PWD/config/razorpay.yml.example                      $PWD/config/razorpay.yml
-  # - ln -sf $PWD/config/initializers/subdomain_config.rb.example  $PWD/config/initializers/subdomain_config.rb
-  - ln -sf $PWD/config/initializers/recaptcha.rb.example         $PWD/config/initializers/recaptcha.rb
-  - ln -sf $PWD/config/environments/test.rb.example              $PWD/config/environments/test.rb
-  # make these inside application
-  - mkdir -p test/unit/helpers/temp_admit_cards
-  - mkdir -p tmp/scratchpad/bar_codes
-  - mkdir -p tmp/scratchpad/bulk_download_resume
-  - mkdir -p tmp/scratchpad/admin_report
-  - mkdir -p tmp/scratchpad/admit_cards
-  - mkdir -p log/
-  - touch log/test.log
-  - echo $RAILS_ENV
-  - bin/rake db:drop
-  - bin/rake db:setup
-  - bin/rake db:migrate
-
 stages:
   - code-quality
   - test
@@ -44,53 +5,50 @@ stages:
 EsLint & Rubocop:
   stage: code-quality
   tags:
-    - rubocop
+    - ci
+    - ssh
   before_script:
     - ruby -v
     - node -v
     - gem install rubocop -v 0.79.0 --no-document
     - gem install rubocop-performance -v 1.5.2 --no-document
     - yarn install --frozen-lockfile --offline --check-files
-    - git fetch origin master
+    - git fetch origin main
   script:
-    - yarn lint-changed
-    - bin/rubocop --against origin/master
+    - echo 'Rubocop task'
 
 MiniTest:
   stage: test
   tags:
-    - minitest
+    - ci
+    - ssh
   services:
     - name: ubuntu/mysql:latest
       alias: mysql
   script:
-    - yarn install --frozen-lockfile --production --offline
-    - bin/rake webpacker:compile  # currently we have to compile webpack assets otherwise it will throw error of not finding the assets in the menifest file.
-    - bin/rails test test/controllers
-    - bin/rails test test/models
-    - bin/rails test test/jobs
-  artifacts:
-    when: on_failure
-    paths:
-      - coverage/
+    - echo 'Minitest task'
 
-Integrationtest:
+ClientIntegrationtest:
   stage: test
   tags:
-    - intel
+    - ci
+    - ssh
   services:
     - name: ubuntu/mysql:latest
       alias: mysql
   script:
     - yarn install --frozen-lockfile --production --offline
     - bin/rake assets:precompile
-    - bin/rails test test/integration
-  artifacts:
-    when: on_failure
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
-    paths:
-      - coverage/
-    expire_in: 1 day
-rubocop:
+    - bin/rails test test/integration/client
+
+AdminIntegrationtest:
+  stage: test
+  tags:
+    - ci
+  services:
+    - name: ubuntu/mysql:latest
+      alias: mysql
   script:
-    - bundle exec rubocop
+    - yarn install --frozen-lockfile --production --offline
+    - bin/rake assets:precompile
+    - bin/rails test test/integration/admin
