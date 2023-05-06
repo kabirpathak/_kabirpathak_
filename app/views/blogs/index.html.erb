@@ -1,5 +1,23 @@
-<%= javascript_pack_tag 'blogs/Blogs' %>
-<div>
-  <div id="blogs"></div>
+<div class="container-fluid mx-2 p-0">
+  <% @blogs.each do |blog|%>
+    <div class="m-2 p-2">
+      <a class="row link" href="/blogs/<%= blog.id %>">
+        <%= blog.title%>
+      </a>
+      <div class="row">
+        <div class="col-auto p-0">
+          <% blog.tags.each do |tag| %>
+            <div class="badge bg-<%= tag.id % 2 %>">
+              <%=tag.name.upcase %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="row">
+        <%= blog.body %>
+      </div>
+    </div>
+    <hr />
+  <% end %>
 </div>
 

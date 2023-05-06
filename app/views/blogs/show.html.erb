@@ -1,14 +1,19 @@
-<p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Title:</strong>
-  <%= @blog.title %>
-</p>
-
-<p>
-  <strong>Body:</strong>
-  <%= @blog.body %>
-</p>
-
-<%= link_to 'Edit', edit_blog_path(@blog) %> |
-<%= link_to 'Back', blogs_path %>
+<div class="container-fluid p-0 mx-2">
+  <h4 class="row">
+    <div class="col-auto p-0">
+      <%= @blog.title %>
+    </div>
+  </h4>
+  <div class="row">
+    <div class="col-auto p-0">
+      <% @blog.tags.each do |tag| %>
+        <div class="badge bg-primary">
+          <%= tag.name.upcase %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <%= @blog.body %>
+  </div>
+</div>
