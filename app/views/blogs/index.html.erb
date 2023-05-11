@@ -1,23 +1,18 @@
-<div class="container-fluid mx-2 p-0">
-  <% @blogs.each do |blog|%>
-    <div class="m-2 p-2">
-      <a class="row link" href="/blogs/<%= blog.id %>">
-        <%= blog.title%>
-      </a>
-      <div class="row">
-        <div class="col-auto p-0">
-          <% blog.tags.each do |tag| %>
-            <div class="badge bg-<%= tag.id % 2 %>">
-              <%=tag.name.upcase %>
+<div class="container-fluid blog-layout">
+  <div class="row justify-content-start">
+    <% @blogs.each do |blog, index| %>
+      <div class="col-xs-12 col-12 col-sm-4 col-md-4 col-lg-3">
+        <div class="blog-container my-3">
+            <div class="d-flex">
+              <img src="https://avatars.githubusercontent.com/u/46262107?s=400&u=e1cdca31211006011c3967789b3640d66860c6a4&v=4" class="blog-cover" />
             </div>
-          <% end %>
+            <div class="d-flex text-center">
+              <%= blog.title %>
+              <%= blog.body %>
+            </div>
         </div>
       </div>
-      <div class="row">
-        <%= blog.body %>
-      </div>
-    </div>
-    <hr />
-  <% end %>
+    <% end %>
+  </div>
 </div>
 
